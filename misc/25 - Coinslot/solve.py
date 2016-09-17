@@ -82,21 +82,24 @@ def calculate_dispersment(change):
 
     if remainder >= 1.00:
         extra = remainder % 1.00
-        number = float((remainder-extra)/1.0)
+        number = float((remainder-extra)/1.00)
         cash.append(mkInt(number))
-        remainder = remainder % 1.0
+        remainder = remainder % 1.00
+        print remainder
     else:
         cash.append('0')
 
     if remainder >= 0.50:
         cash.append('1')
-        remainder = remainder % .50
+        remainder = remainder % 0.50
+        print remainder
     else:
         cash.append('0')
 
     if remainder >= 0.25:
         cash.append('1')
-        remainder = remainder % .25
+        remainder = remainder % 0.25
+        print remainder
     else:
         cash.append('0')
 
@@ -105,18 +108,22 @@ def calculate_dispersment(change):
         number = float((remainder-extra)/0.10)
         cash.append(mkInt(number))
         remainder = remainder % 0.10
+        print remainder
     else:
         cash.append('0')
 
-    if remainder >= 0.05:
+    if remainder >= .05:
         cash.append('1')
-        remainder = remainder % 0.05
+        remainder = remainder % .05
+        print remainder
     else:
         cash.append('0')
 
     print "remainder: %s" % remainder
     test = rmDec(remainder)
     print "remainder: "+test
+    if test < 1:
+        test = '0'
     cash.append(test)
     return cash
 
