@@ -1,32 +1,110 @@
 #!/usr/bin/env python2
 
 from pwn import *
+from math import floor
 
 
 def calculate_dispersment(change):
     cash = []
-    cash.append('0')  # 10,000
-    cash.append('0')  # 5,000
-    cash.append('0')  # 1,000
-    cash.append('0')  # 500
-    cash.append('0')  # 100
-    cash.append('0')  # 50
-    cash.append('0')  # 20
-    cash.append('0')  # 10
-    cash.append('0')  # 5
-    cash.append('0')  # 1
-    cash.append('0')  # .50
-
+    # cash.append('0')  # 10,000
+    # cash.append('0')  # 5,000
+    # cash.append('0')  # 1,000
+    # cash.append('0')  # 500
+    # cash.append('0')  # 100
+    # cash.append('0')  # 50
+    # cash.append('0')  # 20
+    # cash.append('0')  # 10
+    # cash.append('0')  # 5
+    # cash.append('0')  # 1
+    # cash.append('0')  # .50
     remainder = float(change)
-    if float(change) >= 0.25:
+    if remainder >= 10000.00:
+        extra = remainder % 10000.00
+        number = float((remainder-extra)/10000.0)
+        cash.append(mkInt(number))
+        remainder = (remainder - (number * 10000.0)) % 10000.0
+    else:
+        cash.append('0')
+
+    if remainder >= 5000.00:
+        cash.append('1')
+        remainder = remainder % 5000.00
+    else:
+        cash.append('0')
+
+    if remainder >= 1000.00:
+        extra = remainder % 1000.00
+        number = float((remainder-extra)/1000.0)
+        cash.append(mkInt(number))
+        remainder = (remainder - (number * 1000.0)) % 1000.0
+    else:
+        cash.append('0')
+
+    if remainder >= 500.00:
+        cash.append('1')
+        remainder = remainder % 500.00
+    else:
+        cash.append('0')
+
+    if remainder >= 100.00:
+        extra = remainder % 100.00
+        number = float((remainder-extra)/100.0)
+        cash.append(mkInt(number))
+        remainder = (remainder - (number * 100.0)) % 100.0
+    else:
+        cash.append('0')
+
+    if remainder >= 50.00:
+        cash.append('1')
+        remainder = remainder % 50.00
+    else:
+        cash.append('0')
+
+    if remainder >= 20.00:
+        extra = remainder % 20.00
+        number = float((remainder-extra)/20.0)
+        cash.append(mkInt(number))
+        remainder = (remainder - (number * 20.0)) % 20.0
+    else:
+        cash.append('0')
+
+    if remainder >= 10.00:
+        cash.append('1')
+        remainder = remainder % 10.00
+    else:
+        cash.append('0')
+
+    if remainder >= 5.00:
+        cash.append('1')
+        remainder = remainder % 5.00
+    else:
+        cash.append('0')
+
+    if remainder >= 1.00:
+        extra = remainder % 1.00
+        number = float((remainder-extra)/1.0)
+        cash.append(mkInt(number))
+        remainder = (remainder - (number * 1.0)) % 1.0
+    else:
+        cash.append('0')
+
+    if remainder >= 0.50:
+        cash.append('1')
+        remainder = remainder % .50
+    else:
+        cash.append('0')
+
+    if remainder >= 0.25:
         cash.append('1')
         remainder = remainder % .25
     else:
         cash.append('0')
 
-    if float(change) >= 0.1:
-        cash.append('1')
-        remainder = remainder % .1
+    if remainder >= 0.1:
+        extra = remainder % .1
+        number = float((remainder-extra)/.10)
+        cash.append(mkInt(number))
+        remainder = (remainder - (number * .10)) % .1
     else:
         cash.append('0')
 
@@ -37,15 +115,24 @@ def calculate_dispersment(change):
         cash.append('0')
 
     print "remainder: %s" % remainder
-    test = str(remainder)
-    print "remainder: "+test
-    test = test.split(".")[-1]
-    test = test.split("0")[-1]
-    if test == "":
-        test = '0'
+    test = rmDec(remainder)
     print "remainder: "+test
     cash.append(test)
     return cash
+
+
+def mkInt(number):
+    number = str(number).split(".")[0]
+    if number == "":
+        number = '0'
+    return number
+
+
+def rmDec(number):
+    number = (str(number).split(".")[-1]).split("0")[-1]
+    if number == "":
+        number = '0'
+    return number
 
 
 def send_answers(cash):
